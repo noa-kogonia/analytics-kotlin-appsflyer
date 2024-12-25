@@ -18,7 +18,9 @@ android {
         targetSdk = 33
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("proguard-consumer-rules.pro")
-
+        buildFeatures{
+            buildConfig = true
+        }
         buildConfigField("String", "VERSION_NAME", "\"$VERSION_NAME\"")
     }
 
@@ -29,7 +31,7 @@ android {
         }
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
+        isCoreLibraryDesugaringEnabled = false
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }

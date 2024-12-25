@@ -13,12 +13,15 @@ import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.segment.analytics.kotlin.android.plugins.AndroidLifecycle
 import com.appsflyer.deeplink.DeepLinkListener
+import com.segment.analytics.kotlin.BuildConfig
 import com.segment.analytics.kotlin.core.platform.VersionedPlugin
 import com.segment.analytics.kotlin.core.platform.plugins.logger.*
 import com.segment.analytics.kotlin.core.utilities.getString
 import com.segment.analytics.kotlin.core.utilities.mapTransform
 import com.segment.analytics.kotlin.core.utilities.toContent
 import kotlinx.serialization.json.*
+import java.lang.ref.WeakReference
+import kotlin.concurrent.thread
 
 /*
 This is an example of the AppsFlyer device-mode destination plugin that can be integrated with
@@ -63,7 +66,7 @@ class AppsFlyerDestination(
     private val applicationContext: Context,
     private var isDebug: Boolean = false
 ) : DestinationPlugin(), AndroidLifecycle, VersionedPlugin {
-
+    internal var activity:WeakReference<Activity>? = null
     internal var settings: AppsFlyerSettings? = null
     internal var appsflyer: AppsFlyerLib? = null
 
@@ -86,20 +89,22 @@ class AppsFlyerDestination(
             if (type == Plugin.UpdateType.Initial) {
                 appsflyer = AppsFlyerLib.getInstance()
                 analytics.log("Appsflyer Destination loaded")
-                var listener: AppsFlyerConversionListener? = null
+                val listener: AppsFlyerConversionListener? = null
                 this.settings?.let {
-                    if (it.trackAttributionData) {
-                        listener = ConversionListener()
-                    }
                     appsflyer?.setDebugLog(isDebug)
                     appsflyer?.init(it.appsFlyerDevKey, listener, applicationContext)
+                    analytics.log("Appsflyer initialized")
+                    updateEndUserAttributes()
+                    appsflyer?.start(activity?.get() ?: applicationContext)
                 }
             }
+            analytics.log("Appsflyer started")
             deepLinkListener?.let {
                 appsflyer?.subscribeForDeepLink(it)
             }
         }
     }
+
 
     override fun identify(payload: IdentifyEvent): BaseEvent? {
         val userId: String = payload.userId
@@ -127,10 +132,9 @@ class AppsFlyerDestination(
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
         super.onActivityCreated(activity, savedInstanceState)
         if (activity != null) {
-            AppsFlyerLib.getInstance().start(activity)
-            analytics.log("AppsFlyerLib.getInstance().start($activity)")
+            this.activity = WeakReference(activity)
+
         }
-        updateEndUserAttributes()
     }
 
     private fun updateEndUserAttributes() {
