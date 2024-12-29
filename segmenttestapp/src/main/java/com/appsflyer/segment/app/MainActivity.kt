@@ -19,11 +19,7 @@ import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.coroutineScope
-import com.appsflyer.AppsFlyerLib
 import com.segment.analytics.kotlin.destinations.appsflyer.AppsFlyerDestination
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var adapter: KeyValueAdapter? = null
@@ -59,6 +55,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         Log.d(TAG, "MainActivity OnCreate - Initializing...")
         initConversionListener()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "MainActivity OnResume - Strating the SDK")
     }
 
     private fun initConversionListener() {

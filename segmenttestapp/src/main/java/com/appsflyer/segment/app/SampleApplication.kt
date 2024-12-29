@@ -3,8 +3,12 @@ package com.appsflyer.segment.app
 import AnalyticsManager
 import android.app.Application
 import android.util.Log
+import android.view.Gravity
+import android.widget.TextView
 import com.appsflyer.AFLogger
 import com.appsflyer.AppsFlyerLib
+import com.appsflyer.segment.app.MainActivity.Companion.TAG
+import com.segment.analytics.kotlin.destinations.appsflyer.AppsFlyerDestination
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -24,7 +28,6 @@ class SampleApplication : Application() {
         AppsFlyerDestinationManager.initialize(applicationContext)
         AnalyticsManager.analytics.add(plugin = AppsFlyerDestinationManager.appsFlyerDestination)
         Log.d(MainActivity.TAG, "AppsFlyerDestination added to Analytics")
-
         identifyUser()
     }
 

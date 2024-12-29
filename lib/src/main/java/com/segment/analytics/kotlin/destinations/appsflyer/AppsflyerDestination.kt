@@ -9,7 +9,6 @@ import kotlinx.serialization.Serializable
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.AppsFlyerConversionListener
 import android.content.SharedPreferences
-import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.segment.analytics.kotlin.android.plugins.AndroidLifecycle
 import com.appsflyer.deeplink.DeepLinkListener
@@ -21,7 +20,6 @@ import com.segment.analytics.kotlin.core.utilities.mapTransform
 import com.segment.analytics.kotlin.core.utilities.toContent
 import kotlinx.serialization.json.*
 import java.lang.ref.WeakReference
-import kotlin.concurrent.thread
 
 /*
 This is an example of the AppsFlyer device-mode destination plugin that can be integrated with
@@ -89,8 +87,11 @@ class AppsFlyerDestination(
             if (type == Plugin.UpdateType.Initial) {
                 appsflyer = AppsFlyerLib.getInstance()
                 analytics.log("Appsflyer Destination loaded")
-                val listener: AppsFlyerConversionListener? = null
+                var listener: AppsFlyerConversionListener? = null
                 this.settings?.let {
+                    if (it.trackAttributionData) {
+                        listener = ConversionListener()
+                    }
                     appsflyer?.setDebugLog(isDebug)
                     appsflyer?.init(it.appsFlyerDevKey, listener, applicationContext)
                     analytics.log("Appsflyer initialized")
@@ -129,11 +130,10 @@ class AppsFlyerDestination(
         return payload
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        super.onActivityCreated(activity, savedInstanceState)
+    override fun onActivityResumed(activity: Activity?) {
+        super.onActivityResumed(activity)
         if (activity != null) {
             this.activity = WeakReference(activity)
-
         }
     }
 
