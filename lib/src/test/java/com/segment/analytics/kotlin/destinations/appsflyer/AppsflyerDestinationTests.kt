@@ -7,10 +7,8 @@ import androidx.core.os.bundleOf
 import com.appsflyer.AppsFlyerLib
 import com.segment.analytics.kotlin.core.*
 import com.segment.analytics.kotlin.core.platform.Plugin
-import com.segment.analytics.kotlin.destinations.appsflyer.AppsFlyerDestination
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Nested

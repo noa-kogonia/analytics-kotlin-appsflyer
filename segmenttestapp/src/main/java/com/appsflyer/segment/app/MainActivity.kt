@@ -19,7 +19,9 @@ import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.appsflyer.deeplink.DeepLinkResult
 import com.segment.analytics.kotlin.destinations.appsflyer.AppsFlyerDestination
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var adapter: KeyValueAdapter? = null
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // set AppsFlyer conversions listener
         Log.d(TAG, "MainActivity OnCreate - Initializing...")
         initConversionListener()
+        initDeeplinkListener()
         }
     }
 
@@ -105,6 +108,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 Log.e(TAG, "Attribution Failure: $errorMessage")
             }
         }
+    }
+
+    private fun initDeeplinkListener() {
+        AppsFlyerDestinationManager.appsFlyerDestination.deepLinkListener =
+            object : AppsFlyerDestination.ExternalDeepLinkListener {
+                override fun onDeepLinking(p0: DeepLinkResult) {
+                    val deeplinkRes = JSONObject(p0.deepLink.toString())
+                    Log.e(TAG, "subscribeForDeepLink Data: $deeplinkRes")
+                }
+            }
     }
 
     private fun initListView() {

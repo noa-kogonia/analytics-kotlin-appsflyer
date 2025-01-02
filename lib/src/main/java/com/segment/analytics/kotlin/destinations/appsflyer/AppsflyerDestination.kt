@@ -12,6 +12,7 @@ import android.content.SharedPreferences
 import com.appsflyer.AFInAppEventParameterName
 import com.segment.analytics.kotlin.android.plugins.AndroidLifecycle
 import com.appsflyer.deeplink.DeepLinkListener
+import com.appsflyer.deeplink.DeepLinkResult
 import com.segment.analytics.kotlin.BuildConfig
 import com.segment.analytics.kotlin.core.platform.VersionedPlugin
 import com.segment.analytics.kotlin.core.platform.plugins.logger.*
@@ -19,6 +20,7 @@ import com.segment.analytics.kotlin.core.utilities.getString
 import com.segment.analytics.kotlin.core.utilities.mapTransform
 import com.segment.analytics.kotlin.core.utilities.toContent
 import kotlinx.serialization.json.*
+import org.json.JSONObject
 import java.lang.ref.WeakReference
 
 /*
@@ -96,13 +98,13 @@ class AppsFlyerDestination(
                     appsflyer?.init(it.appsFlyerDevKey, listener, applicationContext)
                     analytics.log("Appsflyer initialized")
                     updateEndUserAttributes()
+                    deepLinkListener?.let {
+                        appsflyer?.subscribeForDeepLink(it)
+                    }
                     appsflyer?.start(activity?.get() ?: applicationContext)
                 }
             }
             analytics.log("Appsflyer started")
-            deepLinkListener?.let {
-                appsflyer?.subscribeForDeepLink(it)
-            }
         }
     }
 
