@@ -161,7 +161,7 @@ class AppsFlyerDestination(
     )
 
     interface ExternalAppsFlyerConversionListener : AppsFlyerConversionListener
-    interface ExternalDeepLinkListener : DeepLinkListener
+    fun interface ExternalDeepLinkListener : DeepLinkListener
 
     inner class ConversionListener : AppsFlyerConversionListener {
         override fun onConversionDataSuccess(conversionData: Map<String, Any>) {

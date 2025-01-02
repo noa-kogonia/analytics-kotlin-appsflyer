@@ -112,11 +112,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun initDeeplinkListener() {
         AppsFlyerDestinationManager.appsFlyerDestination.deepLinkListener =
-            object : AppsFlyerDestination.ExternalDeepLinkListener {
-                override fun onDeepLinking(p0: DeepLinkResult) {
-                    val deeplinkRes = JSONObject(p0.deepLink.toString())
-                    Log.e(TAG, "subscribeForDeepLink Data: $deeplinkRes")
-                }
+            AppsFlyerDestination.ExternalDeepLinkListener {
+                deepLinkResult: DeepLinkResult ->
+                val deeplinkRes = JSONObject(deepLinkResult.deepLink.toString())
+                Log.e(TAG, "subscribeForDeepLink Data: $deeplinkRes")
             }
     }
 
